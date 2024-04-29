@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Lab4</string>
+    <string name="copyright">Control Financiero</string>
+    <string name="menu_camera">Lista de movimientos</string>
+    <string name="menu_gallery">Mantenimiento de movimientos</string>
+    <string name="menu_tools">Configuracion</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello</string>
+    <string name="navigation_drawer_close">Cerrar</string>
+    <string name="navigation_drawer_open">Abrir</string>
+
+    <string-array name="opciones_spinner">
+        <item>Credito</item>
+        <item>Debito</item>
+    </string-array>
+</resources>
