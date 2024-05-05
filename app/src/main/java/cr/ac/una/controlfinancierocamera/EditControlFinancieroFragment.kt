@@ -25,6 +25,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import android.app.DatePickerDialog
 import java.util.*
+import cr.ac.menufragment.ListControlFinancieroFragment
 
 class EditControlFinancieroFragment : Fragment() {
 
@@ -70,6 +71,14 @@ class EditControlFinancieroFragment : Fragment() {
                 val fragmentManager = requireActivity().supportFragmentManager
                 fragmentManager.popBackStack()
             }
+        }
+        //boton salir funcionalidad
+        val salirButton: Button = view.findViewById(R.id.Salir)
+        salirButton.setOnClickListener {
+            val fragmentManager = requireActivity().supportFragmentManager
+            fragmentManager.beginTransaction()
+                .replace(R.id.home_content, ListControlFinancieroFragment())
+                .commit()
         }
 
         val spinner: Spinner = view.findViewById(R.id.tipoMovimientoSpinner)
