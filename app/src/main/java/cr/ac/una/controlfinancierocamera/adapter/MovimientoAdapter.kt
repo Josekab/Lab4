@@ -19,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import androidx.appcompat.app.AlertDialog
 
 class MovimientoAdapter (context:Context, movimientos:List<Movimiento>):
     ArrayAdapter<Movimiento>(context,0,movimientos){
@@ -40,13 +41,19 @@ class MovimientoAdapter (context:Context, movimientos:List<Movimiento>):
         var bottonDelete = view.findViewById<ImageButton>(R.id.button_delete)
         bottonDelete.setOnClickListener{
             val mainActivity = context as MainActivity
-            GlobalScope.launch(Dispatchers.Main) {
-                movimiento?.let { it1 -> mainActivity.movimientoController.deleteMovimiento(it1) }
-                clear()
-                addAll(mainActivity.movimientoController.listMovimientos())
-                notifyDataSetChanged()
-                notifyDataSetChanged()
-            }
+            AlertDialog.Builder(mainActivity)
+                .setTitle("Confirmación de eliminación")
+                .setMessage("¿Estás seguro de que deseas eliminar este dato?")
+                .setPositiveButton("Sí") { dialog, which ->
+                    GlobalScope.launch(Dispatchers.Main) {
+                        movimiento?.let { it1 -> mainActivity.movimientoController.deleteMovimiento(it1) }
+                        clear()
+                        addAll(mainActivity.movimientoController.listMovimientos())
+                        notifyDataSetChanged()
+                    }
+                }
+                .setNegativeButton("No", null)
+                .show()
         }
         var bottonUpdate = view.findViewById<ImageButton>(R.id.button_update)
         bottonUpdate.setOnClickListener{
