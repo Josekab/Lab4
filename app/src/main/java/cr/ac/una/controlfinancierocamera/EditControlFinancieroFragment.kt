@@ -23,25 +23,27 @@ import cr.ac.una.controlfinancierocamera.entity.Movimiento
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.util.Date
-
+import android.app.DatePickerDialog
+import java.util.*
 
 class EditControlFinancieroFragment : Fragment() {
 
+    lateinit var captureButton: Button
+    lateinit var imageView: ImageView
+    lateinit var elementoSeleccionado: String
+    lateinit var fechaButton: Button
+    lateinit var fechaText: TextView
 
-    lateinit var captureButton : Button
-    lateinit var imageView : ImageView
-    lateinit var elementoSeleccionado : String
-
-
+    private val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
+        val selectedDate = String.format("%d/%d/%d", day, month + 1, year)
+        fechaText.text = selectedDate
+    }
 
     private val requestCameraPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
             dispatchTakePictureIntent()
-        } else {
-            // Permiso denegado, manejar la situación aquí si es necesario
         }
     }
 
@@ -51,59 +53,44 @@ class EditControlFinancieroFragment : Fragment() {
         if (result.resultCode == Activity.RESULT_OK && result.data != null) {
             val imageBitmap = result.data?.extras?.get("data") as? Bitmap
             imageView.setImageBitmap(imageBitmap)
-        } else {
-            // Manejar el caso en el que no se haya podido capturar la imagen
         }
     }
 
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val botonNuevo = view.findViewById<Button>(R.id.saveMovimientoButton)
-
         val monto = view.findViewById<TextView>(R.id.textMonto)
+        fechaText = view.findViewById(R.id.textFecha)
+        fechaButton = view.findViewById(R.id.fecha)
 
-        val fecha = view.findViewById<TextView>(R.id.textFecha)
         botonNuevo.setOnClickListener {
-
-            var movimiento = Movimiento(null,monto.text.toString().toDouble(), elementoSeleccionado, fecha.text.toString())
+            val movimiento = Movimiento(null, monto.text.toString().toDouble(), elementoSeleccionado, fechaText.text.toString())
             val actividad = activity as MainActivity
             GlobalScope.launch(Dispatchers.IO) {
                 actividad.movimientoController.insertMovimiento(movimiento)
-                //regresa al fragmento anterior
-
                 val fragmentManager = requireActivity().supportFragmentManager
                 fragmentManager.popBackStack()
             }
         }
-        val spinner: Spinner = view.findViewById(R.id.tipoMovimientoSpinner)
 
+        val spinner: Spinner = view.findViewById(R.id.tipoMovimientoSpinner)
         ArrayAdapter.createFromResource(
             view.context,
             R.array.tiposMovimiento,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
-            // Specify the layout to use when the list of choices appears.
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
             spinner.adapter = adapter
         }
+
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                // Obtiene el valor seleccionado del array de recursos
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val elementos = resources.getStringArray(R.array.tiposMovimiento)
                 elementoSeleccionado = elementos[position]
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Se llama cuando no hay ningún elemento seleccionado
-            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
+
         captureButton = view.findViewById(R.id.captureButton)
         imageView = view.findViewById(R.id.imageView)
 
@@ -115,19 +102,24 @@ class EditControlFinancieroFragment : Fragment() {
             }
         }
 
+        fechaButton.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            DatePickerDialog(
+                requireContext(),
+                dateSetListener,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_edit_control_financiero, container, false)
-    }private fun checkCameraPermission(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.CAMERA
-        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun checkCameraPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun requestCameraPermission() {

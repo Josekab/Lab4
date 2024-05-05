@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.nav_gallery -> {
                 title = R.string.menu_gallery
-                fragment= CameraFragment()
+                fragment= EditControlFinancieroFragment()
 
             }
             R.id.nav_manage -> title = R.string.menu_tools
