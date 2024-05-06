@@ -16,9 +16,9 @@ class MovimientoController {
         movimientoService.apiService.createItem(movimientos)
     }
 
-    /*suspend fun updateMovimiento(movimiento: Movimiento){
+    suspend fun updateMovimiento(movimiento: Movimiento){
         movimiento._uuid?.let { movimientoService.apiService.updateItem(it, movimiento) }
-    }*/
+    }
 
     suspend fun deleteMovimiento(movimiento: Movimiento){
         movimiento._uuid?.let { movimientoService.apiService.deleteItem(it) }

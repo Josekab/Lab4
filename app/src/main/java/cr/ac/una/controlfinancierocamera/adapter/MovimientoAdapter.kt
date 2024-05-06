@@ -20,6 +20,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import android.app.AlertDialog
+import android.os.Bundle
 
 class MovimientoAdapter (context:Context, movimientos:List<Movimiento>):
     ArrayAdapter<Movimiento>(context,0,movimientos){
@@ -57,16 +58,23 @@ class MovimientoAdapter (context:Context, movimientos:List<Movimiento>):
         }
         var buttonUpdate = view.findViewById<ImageButton>(R.id.button_update)
         buttonUpdate.setOnClickListener {
+            val movimiento = getItem(position) // Asegúrate de que este método obtiene el objeto Movimiento correcto
+
             AlertDialog.Builder(context)
-                .setTitle("Confirmación de actualización")
-                .setMessage("¿Estás seguro de que deseas actualizar los datos?")
+                .setTitle("Confirmación de edición")
+                .setMessage("¿Estás seguro de que deseas editar los datos?")
                 .setPositiveButton("Sí") { dialog, which ->
-                    val fragment = EditControlFinancieroFragment()
+                    val fragment = EditControlFinancieroFragment().apply {
+                        arguments = Bundle().apply {
+                            putSerializable("movimiento", movimiento)
+                        }
+                    }
                     val fragmentManager = (context as MainActivity).supportFragmentManager
-                    val transaction = fragmentManager.beginTransaction()
-                    transaction.replace(R.id.home_content, fragment)
-                    transaction.addToBackStack(null) // Agrega la transacción a la pila de retroceso
-                    transaction.commit()
+                    fragmentManager.beginTransaction().apply {
+                        replace(R.id.home_content, fragment)
+                        addToBackStack(null)
+                        commit()
+                    }
                 }
                 .setNegativeButton("No", null)
                 .show()
