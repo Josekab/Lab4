@@ -24,8 +24,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import android.app.DatePickerDialog
+import androidx.core.graphics.drawable.toBitmap
+import java.io.ByteArrayOutputStream
 import java.util.*
-import cr.ac.menufragment.ListControlFinancieroFragment
+
 
 class EditControlFinancieroFragment : Fragment() {
 
@@ -34,6 +36,7 @@ class EditControlFinancieroFragment : Fragment() {
     lateinit var elementoSeleccionado: String
     lateinit var fechaButton: Button
     lateinit var fechaText: TextView
+    lateinit var foto: Bitmap
 
     private val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
         val selectedDate = String.format("%d/%d/%d", day, month + 1, year)
@@ -54,6 +57,7 @@ class EditControlFinancieroFragment : Fragment() {
         if (result.resultCode == Activity.RESULT_OK && result.data != null) {
             val imageBitmap = result.data?.extras?.get("data") as? Bitmap
             imageView.setImageBitmap(imageBitmap)
+            foto = imageBitmap!!.copy(imageBitmap.config, true)
         }
     }
 
@@ -63,22 +67,20 @@ class EditControlFinancieroFragment : Fragment() {
         fechaText = view.findViewById(R.id.textFecha)
         fechaButton = view.findViewById(R.id.fecha)
 
+
+
         botonNuevo.setOnClickListener {
-            val movimiento = Movimiento(null, monto.text.toString().toDouble(), elementoSeleccionado, fechaText.text.toString())
+            val movimiento = Movimiento(null,
+                monto.text.toString().toDouble(),
+                elementoSeleccionado, fechaText.text.toString(),
+                foto
+                )
             val actividad = activity as MainActivity
             GlobalScope.launch(Dispatchers.IO) {
                 actividad.movimientoController.insertMovimiento(movimiento)
                 val fragmentManager = requireActivity().supportFragmentManager
                 fragmentManager.popBackStack()
             }
-        }
-        //boton salir funcionalidad
-        val salirButton: Button = view.findViewById(R.id.Salir)
-        salirButton.setOnClickListener {
-            val fragmentManager = requireActivity().supportFragmentManager
-            fragmentManager.beginTransaction()
-                .replace(R.id.home_content, ListControlFinancieroFragment())
-                .commit()
         }
 
         val spinner: Spinner = view.findViewById(R.id.tipoMovimientoSpinner)
