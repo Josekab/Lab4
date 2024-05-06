@@ -27,7 +27,7 @@ import android.app.DatePickerDialog
 import androidx.core.graphics.drawable.toBitmap
 import java.io.ByteArrayOutputStream
 import java.util.*
-
+import cr.ac.menufragment.ListControlFinancieroFragment
 
 class EditControlFinancieroFragment : Fragment() {
 
@@ -122,6 +122,16 @@ class EditControlFinancieroFragment : Fragment() {
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)
             ).show()
+        }
+        val salirButton = view.findViewById<Button>(R.id.Salir)
+        salirButton.setOnClickListener {
+            val fragment = ListControlFinancieroFragment()
+            val fragmentManager = activity?.supportFragmentManager
+            fragmentManager?.beginTransaction()?.apply {
+                replace(R.id.home_content, fragment)
+                addToBackStack(null)
+                commit()
+            }
         }
     }
 

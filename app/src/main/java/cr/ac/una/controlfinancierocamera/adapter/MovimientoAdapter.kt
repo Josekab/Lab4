@@ -19,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import android.app.AlertDialog
 
 class MovimientoAdapter (context:Context, movimientos:List<Movimiento>):
     ArrayAdapter<Movimiento>(context,0,movimientos){
@@ -38,15 +39,21 @@ class MovimientoAdapter (context:Context, movimientos:List<Movimiento>):
         fecha.text = movimiento?.fecha.toString()
 
         var bottonDelete = view.findViewById<ImageButton>(R.id.button_delete)
-        bottonDelete.setOnClickListener{
-            val mainActivity = context as MainActivity
-            GlobalScope.launch(Dispatchers.Main) {
-                movimiento?.let { it1 -> mainActivity.movimientoController.deleteMovimiento(it1) }
-                clear()
-                addAll(mainActivity.movimientoController.listMovimientos())
-                notifyDataSetChanged()
-                notifyDataSetChanged()
-            }
+        bottonDelete.setOnClickListener {
+            AlertDialog.Builder(context)
+                .setTitle("Confirmación de borrado")
+                .setMessage("¿Estás seguro de que deseas borrar los datos?")
+                .setPositiveButton("Sí") { dialog, which ->
+                    val mainActivity = context as MainActivity
+                    GlobalScope.launch(Dispatchers.Main) {
+                        movimiento?.let { it1 -> mainActivity.movimientoController.deleteMovimiento(it1) }
+                        clear()
+                        addAll(mainActivity.movimientoController.listMovimientos())
+                        notifyDataSetChanged()
+                    }
+                }
+                .setNegativeButton("No", null)
+                .show()
         }
         var bottonUpdate = view.findViewById<ImageButton>(R.id.button_update)
         bottonUpdate.setOnClickListener{
