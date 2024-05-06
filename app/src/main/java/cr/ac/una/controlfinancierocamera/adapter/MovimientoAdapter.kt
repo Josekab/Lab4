@@ -55,14 +55,21 @@ class MovimientoAdapter (context:Context, movimientos:List<Movimiento>):
                 .setNegativeButton("No", null)
                 .show()
         }
-        var bottonUpdate = view.findViewById<ImageButton>(R.id.button_update)
-        bottonUpdate.setOnClickListener{
-            val fragment = EditControlFinancieroFragment()
-            val fragmentManager = (context as MainActivity).supportFragmentManager
-            val transaction = fragmentManager.beginTransaction()
-            transaction.replace(R.id.home_content, fragment)
-            transaction.addToBackStack(null) // Agrega la transacción a la pila de retroceso
-            transaction.commit()
+        var buttonUpdate = view.findViewById<ImageButton>(R.id.button_update)
+        buttonUpdate.setOnClickListener {
+            AlertDialog.Builder(context)
+                .setTitle("Confirmación de actualización")
+                .setMessage("¿Estás seguro de que deseas actualizar los datos?")
+                .setPositiveButton("Sí") { dialog, which ->
+                    val fragment = EditControlFinancieroFragment()
+                    val fragmentManager = (context as MainActivity).supportFragmentManager
+                    val transaction = fragmentManager.beginTransaction()
+                    transaction.replace(R.id.home_content, fragment)
+                    transaction.addToBackStack(null) // Agrega la transacción a la pila de retroceso
+                    transaction.commit()
+                }
+                .setNegativeButton("No", null)
+                .show()
         }
 
 

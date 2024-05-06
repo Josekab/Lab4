@@ -24,6 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import android.app.DatePickerDialog
+import android.text.InputFilter
 import androidx.core.graphics.drawable.toBitmap
 import java.io.ByteArrayOutputStream
 import java.util.*
@@ -68,7 +69,20 @@ class EditControlFinancieroFragment : Fragment() {
         fechaButton = view.findViewById(R.id.fecha)
 
 
-
+        monto.filters = arrayOf<InputFilter>(InputFilter { source, start, end, dest, dstart, dend ->
+            if (source.isEmpty()) {
+                return@InputFilter null
+            }
+            val enteringText = source.toString()
+            val resultingText = dest.toString().substring(0, dstart) + enteringText + dest.toString().substring(dend)
+            if (resultingText.contains(".")) {
+                val decimalParts = resultingText.split(".")
+                if (decimalParts.size >= 2 && decimalParts[1].length > 2) {
+                    return@InputFilter ""
+                }
+            }
+            null
+        })
         botonNuevo.setOnClickListener {
             val movimiento = Movimiento(null,
                 monto.text.toString().toDouble(),
