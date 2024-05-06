@@ -10,21 +10,21 @@ import kotlinx.coroutines.launch
 class MovimientoController {
     var movimientoService= MovimientoService()
 
-
-
     suspend fun insertMovimiento(movimiento: Movimiento){
-
-            var movimientos: ArrayList<Movimiento> = arrayListOf()
-            movimientos.add(movimiento)
-            movimientoService.apiService.createItem(movimientos)
-
-    }
-    suspend fun  deleteMovimiento(movimiento: Movimiento){
-            movimiento._uuid?.let { movimientoService.apiService.deleteItem(it) }
-    }
-    suspend fun  listMovimientos():ArrayList<Movimiento>{
-            return movimientoService.apiService.getItems().items as ArrayList<Movimiento>
+        var movimientos: ArrayList<Movimiento> = arrayListOf()
+        movimientos.add(movimiento)
+        movimientoService.apiService.createItem(movimientos)
     }
 
+    /*suspend fun updateMovimiento(movimiento: Movimiento){
+        movimiento._uuid?.let { movimientoService.apiService.updateItem(it, movimiento) }
+    }*/
 
+    suspend fun deleteMovimiento(movimiento: Movimiento){
+        movimiento._uuid?.let { movimientoService.apiService.deleteItem(it) }
+    }
+
+    suspend fun listMovimientos():ArrayList<Movimiento>{
+        return movimientoService.apiService.getItems().items as ArrayList<Movimiento>
+    }
 }

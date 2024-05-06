@@ -13,7 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import cr.ac.menufragment.CameraFragment
 import cr.ac.una.controlfinancierocamera.MainActivity
 import cr.ac.una.controlfinancierocamera.R
-
+import cr.ac.una.controlfinancierocamera.EditControlFinancieroFragment
 import cr.ac.una.controlfinancierocamera.entity.Movimiento
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -50,7 +50,7 @@ class MovimientoAdapter (context:Context, movimientos:List<Movimiento>):
         }
         var bottonUpdate = view.findViewById<ImageButton>(R.id.button_update)
         bottonUpdate.setOnClickListener{
-            val fragment = CameraFragment()
+            val fragment = EditControlFinancieroFragment()
             val fragmentManager = (context as MainActivity).supportFragmentManager
             val transaction = fragmentManager.beginTransaction()
             transaction.replace(R.id.home_content, fragment)
